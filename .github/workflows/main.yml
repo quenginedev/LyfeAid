@@ -14,8 +14,9 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@master
-      - name: Install Dependencies
+      - name: Setup Node
         uses: actions/setup-node@master
+      - name: Install Dependencies and Build
         run: |
             cd app/
             npm ci
