@@ -5,7 +5,7 @@ name: Deployment
 # events but only for the master branch
 on:
   push:
-    branches: [ master ]
+    branches: [ development ]
 
 jobs:
   build:
