@@ -1,0 +1,62 @@
+type User {
+    id: ID! @id
+    firebase_id: String! @unique
+    name: String!
+    phone: String!
+    gender: String!
+    photoURL: String
+
+    account_type: AccountType!
+    verified: Boolean @default(value: false)
+
+    specialization: Specialization
+    doctors: [User!]! @relation(name: "UserDoctor")
+    patients: [User!]! @relation(name: "UserPatient")
+
+    chatRooms: [ChatRoom!]! 
+
+    createdAt: DateTime! @createdAt
+    updatedAt: DateTime! @updatedAt
+}
+
+type AccountType{
+    id: ID! @id
+    name: String!
+    users: [User!]! @relation(link: TABLE)
+    permissions: [Permission!]!
+    createdAt: DateTime! @createdAt
+    updatedAt: DateTime! @updatedAt
+}
+
+type Permission{
+    id: ID! @id
+    name: String!
+    key: String! @unique
+    createdAt: DateTime! @createdAt
+    updatedAt: DateTime! @updatedAt
+}
+
+type Specialization {
+    id: ID! @id
+    name: String!
+    createdAt: DateTime! @createdAt
+    updatedAt: DateTime! @updatedAt
+}
+
+type ChatRoom {
+    id: ID! @id
+    recipients: [User!]! @relation(link: TABLE)
+    content: [MessageContent!]!
+    createdAt: DateTime! @createdAt
+    updatedAt: DateTime! @updatedAt
+}
+
+type MessageContent {
+    id: ID! @id
+    sender: User!
+    text: String!
+    chatRoom: ChatRoom! @relation(link: INLINE)
+    createdAt: DateTime! @createdAt
+    updatedAt: DateTime! @updatedAt
+}
+
