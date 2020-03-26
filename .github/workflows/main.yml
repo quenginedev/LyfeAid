@@ -15,10 +15,10 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@master
       - name: Install Dependencies
-        run: npm ci
-      - name: Build
+        uses: actions/setup-node@master
         run: |
             cd app/
+            npm ci
             npm run build
           
   deploy:
