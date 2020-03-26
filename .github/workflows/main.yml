@@ -17,10 +17,11 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@master
       - name: Install Dependencies and Build
-        run: |
-            cd app/
-            npm ci
-            npm run build
+        # run: |
+        #     cd app/
+        #     npm ci
+        #     npm run build
+        run: ls
           
   deploy:
     name: Deploy
@@ -30,9 +31,10 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@master
       - name: Deploy to Firebase
-        uses: w9jds/firebase-action@master
-        with:
-          args: deploy --only hosting
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+        run: ls
+        # uses: w9jds/firebase-action@master
+        # with:
+        #   args: deploy --only hosting
+        # env:
+        #   FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           
