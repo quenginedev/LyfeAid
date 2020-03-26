@@ -1,10 +1,18 @@
 <template>
     <v-row justify="center">
-        <v-col cols="10">
-            <v-row>
+        <v-col cols="10" sm="6" md="4" lg="3" xl="3">
+            <v-row justify="space-between">
                 <v-btn icon color="primary">
                     <v-icon>mdi-menu</v-icon>
                 </v-btn>
+                <template >
+                    <v-btn icon color="secondary" class="">
+                        <v-icon>mdi-bell</v-icon>
+                    </v-btn>
+                    <v-btn icon color="accent">
+                        <v-icon>mdi-chat</v-icon>
+                    </v-btn>
+                </template>
             </v-row>
             <h1 class=" display-1 my-7 ">
                 Online Doctor Consultation
