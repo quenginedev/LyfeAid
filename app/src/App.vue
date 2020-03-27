@@ -30,10 +30,23 @@ export default {
     showError(error){
       this.error = error
       this.is_show_error = true
+    },
+    setDarkMode(){
+      let format = 'hh:mm:ss'
+      let now = this.$moment()
+      let after = this.$moment('06:00:00', format)
+      let before = this.$moment('18:00:00', format)
+      if(now.isBetween(before, after)){
+        this.$vuetify.theme.dark = true    
+      }else{
+        this.$vuetify.theme.dark = false
+      }
     }
   },
+  mounted() {
+    this.setDarkMode()
+  },
   created() {
-    this.$vuetify.theme.dark = false
     this.$root.$on('error', this.showError)
   },
 };
