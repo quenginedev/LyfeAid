@@ -47,12 +47,13 @@ export default {
     setDarkMode(){
       let format = 'hh:mm:ss'
       let now = this.$moment()
-      let after = this.$moment('06:00:00', format)
       let before = this.$moment('18:00:00', format)
+      let after = this.$moment('6:00:00', format)
       if(now.isBetween(before, after)){
         this.$vuetify.theme.dark = true    
       }else{
-        this.$vuetify.theme.dark = false
+        this.$vuetify.theme.dark = false    
+
       }
     }
   },
@@ -68,8 +69,7 @@ export default {
         this.show_unsupported = true
       }
     })
-    // this.$vuetify.theme.dark = false
-    // this.$root.$on('error', this.showError)
+    this.$root.$on('error', this.showError)
   },
 };
 </script>
