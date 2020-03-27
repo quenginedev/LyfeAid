@@ -10,6 +10,7 @@ const routes = [
     {name: 'new-user', path: 'new-user', component: ()=>import('../views/Forms/NewUser.vue')},
     {name: 'search-doctor', path: 'search-doctor', component: ()=>import('../views/Forms/SearchDoctor.vue')},
     {name: 'search-doctor-category', path: 'search-doctor/:category', component: ()=>import('../views/Forms/SearchDoctor.vue')},
+    {name: 'chat-rooms', path: 'chat-rooms', component: ()=>import('../views/Communications/ChatRooms.vue')},
     {name: 'messaging', path: 'messaging/:id', component: ()=>import('../views/Communications/Messaging.vue')},
   ]}
 ]
