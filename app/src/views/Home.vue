@@ -9,7 +9,7 @@
                     <v-btn icon color="secondary" class="">
                         <v-icon>mdi-bell</v-icon>
                     </v-btn>
-                    <v-btn icon color="accent">
+                    <v-btn @click="$router.push({name: 'chat-rooms'})" icon color="accent">
                         <v-icon>mdi-chat</v-icon>
                     </v-btn>
                 </template>
