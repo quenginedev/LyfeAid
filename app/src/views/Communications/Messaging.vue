@@ -1,6 +1,6 @@
 <template>
     <v-row justify="center">
-        <v-col cols="12" class="messages">
+        <v-col cols="10" sm="6" md="4" lg="3" xl="3" class="messages">
             <v-list>
                 <v-alert
                     class="py-0"

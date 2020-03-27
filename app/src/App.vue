@@ -53,6 +53,7 @@ export default {
         this.$vuetify.theme.dark = true    
       }else{
         this.$vuetify.theme.dark = false    
+
       }
     }
   },
