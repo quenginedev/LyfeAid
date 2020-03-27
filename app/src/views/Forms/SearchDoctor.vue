@@ -1,6 +1,6 @@
 <template>
     <v-row justify="center">
-        <v-col cols="10">
+        <v-col cols="10" sm="6" md="4" lg="3" xl="3">
             <v-row justify="space-between">
                 <v-text-field
                         v-model="search_phrase"
