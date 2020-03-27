@@ -1,5 +1,4 @@
 <template>
-<<<<<<< HEAD
   <v-app>
     <v-row justify="center" v-if="show_routes">
       <v-col cols="12" sm="8" md="6" lg="4" xl="3">
@@ -27,24 +26,6 @@
         <p class="secondary--text headline">Android & IOS supported</p>
       </v-col>
     </v-row>
-=======
-  <v-app>        
-      <v-snackbar
-        top
-        color="error"
-        v-model="is_show_error"
-      >
-        <v-icon left>mdi-alert</v-icon>{{ error.message }}
-        <v-btn
-                color="pink"
-                text
-                @click="is_show_error = false"
-        >
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
-      </v-snackbar>
-      <router-view></router-view>
->>>>>>> 18d238c51ff23c7804f6a50ebddb442e73941af6
   </v-app>
 </template>
 
