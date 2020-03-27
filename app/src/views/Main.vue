@@ -1,5 +1,16 @@
 <template>
-    <router-view class="pt-3 ma-0" v-if="show_route"/>
+    <v-row justify="center" align="center">
+        <router-view class="pt-3 ma-0" v-if="show_route"/>
+        <div v-else class="text-center">
+            <v-progress-circular
+                indeterminate
+                size="72"
+                color="primary"
+            ></v-progress-circular>
+            
+            <p class="mt-3">Loading</p>
+        </div>
+    </v-row>
 </template>
 <script>
 import Crud from '../graphql/Crud.gql'
@@ -10,7 +21,7 @@ export default {
             show_route: false
         }
     },
-    mounted(){
+    created() {
         this.show_route = false
         this.$firebase.auth().onAuthStateChanged(user=>{
             if(!user){
