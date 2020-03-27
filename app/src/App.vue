@@ -1,20 +1,31 @@
 <template>
-  <v-app>        
-      <v-snackbar
-        top
-        color="error"
-        v-model="is_show_error"
-      >
-        <v-icon left>mdi-alert</v-icon>{{ error.message }}
-        <v-btn
-                color="pink"
-                text
-                @click="is_show_error = false"
+  <v-app>
+    <v-row justify="center" v-if="show_routes">
+      <v-col cols="12" sm="8" md="6" lg="4" xl="3">
+        <v-snackbar
+          top
+          color="error"
+          v-model="is_show_error"
         >
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
-      </v-snackbar>
-      <router-view></router-view>
+          <v-icon left>mdi-alert</v-icon>{{ error.message }}
+          <v-btn
+                  color="pink"
+                  text
+                  @click="is_show_error = false"
+          >
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-snackbar>
+        <router-view></router-view>
+      </v-col>  
+    </v-row>
+    <v-row v-if="show_unsupported" justify="center" align="center">
+      <v-col class="text-center">
+        <v-icon size="124">mdi-emoticon-sad</v-icon>
+        <h3 class="display-2">Sorry platform not supported</h3>
+        <p class="secondary--text headline">Android & IOS supported</p>
+      </v-col>
+    </v-row>
   </v-app>
 </template>
 
@@ -24,6 +35,8 @@ export default {
 
   data: () => ({
     error: {},
+    show_routes: false,
+    show_unsupported: false,
     is_show_error: false
   }),
   methods: {
@@ -47,7 +60,16 @@ export default {
     this.setDarkMode()
   },
   created() {
-    this.$root.$on('error', this.showError)
+    this.$capacitor.Plugins.Device.getInfo().then(info=>{
+      console.log(info)
+      if (info.operatingSystem == "android" || info.operatingSystem == 'ios'){
+        this.show_routes =true
+      }else{
+        this.show_unsupported = true
+      }
+    })
+    // this.$vuetify.theme.dark = false
+    // this.$root.$on('error', this.showError)
   },
 };
 </script>

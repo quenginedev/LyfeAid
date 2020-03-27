@@ -8,6 +8,8 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "@capacitor/cli": "^1.5.1",
+    "@capacitor/core": "^1.5.1",
     "core-js": "^3.6.4",
     "firebase": "^7.11.0",
     "pluralize": "^8.0.0",
