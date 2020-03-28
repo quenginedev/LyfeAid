@@ -5,6 +5,7 @@
             <!-- <pre>{{user}}</pre> -->
             <!-- <pre>{{chatUsers}}</pre> -->
             <!-- <v-card class="card-rounded px-3 mb-7" v-for="(chatUser, index) in chatUsers" :key="index">
+
                 <v-row align="center">
                     <v-col cols="3" class=" text-center">
                         <v-avatar class=" elevation-3" color="primary">
