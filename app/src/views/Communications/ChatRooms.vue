@@ -1,7 +1,7 @@
 <template>
     <v-row justify="center">
-        <v-col cols="10">
-            <v-btn @click="$router.go(-1)" icon><v-icon>mdi-arrow-left</v-icon></v-btn>
+        <v-col cols="11">
+            <v-btn @click="$router.go(-1)" class="mb-5" icon><v-icon>mdi-arrow-left</v-icon></v-btn>
             <!-- <pre>{{user}}</pre> -->
             <!-- <pre>{{chatUsers}}</pre> -->
             <!-- <v-card class="card-rounded px-3 mb-7" v-for="(chatUser, index) in chatUsers" :key="index">

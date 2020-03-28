@@ -1,5 +1,5 @@
 <template>
-    <v-row justify="center" align="center">
+    <div>
         <router-view class="pt-3 ma-0" v-if="show_route"/>
         <div v-else class="text-center">
             <v-progress-circular
@@ -10,7 +10,7 @@
             
             <p class="mt-3">Loading</p>
         </div>
-    </v-row>
+    </div>
 </template>
 <script>
 import Crud from '../graphql/Crud.gql'
