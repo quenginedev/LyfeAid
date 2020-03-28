@@ -7,9 +7,11 @@ import firebase from './plugins/firebase'
 import vueMoment from 'vue-moment'
 import {WebRTC} from 'vue-webrtc'
 import {createProvider} from './plugins/vue-apollo'
+import Cap from './plugins/capacitor'
 
 Vue.use(firebase)
 Vue.use(vueMoment)
+Vue.use(Cap)
 
 
 Vue.component(WebRTC.name, WebRTC)
