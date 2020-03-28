@@ -9,13 +9,13 @@
                     :color="isSelf(chat.sender.id) ?  'primary' : 'secondary'"
                     colored-border
                 >   
-                    <p class="ma-0">{{chat.text}}</p>
                     <p class=" grey--text font-weight-light overline ma-0">
                         {{chat.sender.name.toUpperCase()}}
                         <span>
                             | {{chat.createdAt | moment("DD-MM-YYYY, h:mm:ss a")}}
                         </span>    
                     </p>
+                    <p class="ma-0">{{chat.text}}</p>
                     
                 </v-alert>
             </v-list>
@@ -50,8 +50,11 @@
                         clearable
                     >
                         <v-icon slot="prepend" color="secondary">mdi-camera</v-icon>
-                        <v-icon v-if="!newText" slot="append-outer" color="red lighten-1">mdi-microphone</v-icon>
-                        <v-icon @click="sendMessage" v-else slot="append-outer" color="primary lighten-1">mdi-send</v-icon>
+                        <v-icon @click="startRecognition" v-if="!newText && !recording" slot="append-outer" color="red lighten-1">mdi-microphone</v-icon>
+                        <v-icon v-else-if="!recording && newText" @click="sendMessage" 
+                            slot="append-outer" color="primary lighten-1">mdi-send
+                        </v-icon>
+                        <v-icon v-else  slot="append-outer" color="red lighten-1">mdi-microphone-outline</v-icon>
                     </v-textarea>
                 </v-col>
             </v-row>
@@ -81,6 +84,8 @@ export default {
         return {
             user: this.$store.getters['auth/getUser'],
             loading: false,
+            recording: false,
+            recognition: false,
             chatRoom: {},
             newText: '',
             offsetTop: window.scrollY,
@@ -97,6 +102,33 @@ export default {
     },
 
     methods: {
+
+        startRecognition(){
+            this.recognition.start()
+            this.recording = true
+        },
+        initRecognition(){
+            let SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+            this.recognition = SpeechRecognition ? new SpeechRecognition() : false
+
+            if (!this.recognition) {
+                return false
+            }
+
+            console.log(this.recognition)
+            this.recognition.lang = this.lang
+            this.recognition.interimResults = true
+
+            this.recognition.addEventListener('speechend', event => {
+                this.recording = false
+            })
+
+            this.recognition.addEventListener('result', event => {
+                this.newText = event.results[0][0].transcript
+            })
+
+        },
+
         onScroll (e) {
             this.offsetTop = window.scrollY
         },
@@ -106,7 +138,9 @@ export default {
         },
 
         goBottom(){
+            console.log(this.pageHeight, this.offsetTop, this.pageHeight - this.offsetTop)
             this.$vuetify.goTo(this.pageHeight)
+            this.$vuetify.goTo(this.pageHeight + (this.pageHeight - this.offsetTop))
         },
         getChatRoom(id){
             this.loading = true
@@ -164,7 +198,6 @@ export default {
                 this.goBottom()
             }
         },
-
         sendMessage(){
             MessageContent.insert(`{
                 text
@@ -190,6 +223,7 @@ export default {
         let id = this.$route.params.id
         this.getChatRoom(id)
         this.listenToIncomingMessages(id)
+        this.initRecognition()
     }
 }
 </script>

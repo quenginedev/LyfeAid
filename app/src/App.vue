@@ -1,7 +1,7 @@
 <template>
   <v-app>
-    <v-row justify="center" v-if="show_routes">
-      <v-col cols="12" sm="8" md="6" lg="4" xl="3" style="height: 100vh">
+    <div justify="center" v-if="show_routes">
+      <v-col cols="12" sm="8" md="6" lg="4" xl="3">
         <v-snackbar
           top
           color="error"
@@ -18,7 +18,7 @@
         </v-snackbar>
         <router-view></router-view>
       </v-col>  
-    </v-row>
+    </div>
     <v-row v-if="show_unsupported" justify="center" align="center">
       <v-col class="text-center">
         <v-icon size="124">mdi-emoticon-sad</v-icon>
