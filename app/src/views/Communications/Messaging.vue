@@ -1,5 +1,5 @@
 <template>
-    <v-row justify="center">
+    <v-row v-scroll="onScroll" justify="center">
         <v-col cols="10" sm="6" md="4" lg="3" xl="3" class="messages">
             <v-list>
                 <v-alert
@@ -9,13 +9,13 @@
                     :color="isSelf(chat.sender.id) ?  'primary' : 'secondary'"
                     colored-border
                 >   
-                    <p class="ma-0">{{chat.text}}</p>
                     <p class=" grey--text font-weight-light overline ma-0">
                         {{chat.sender.name.toUpperCase()}}
                         <span>
                             | {{chat.createdAt | moment("DD-MM-YYYY, h:mm:ss a")}}
                         </span>    
                     </p>
+                    <p class="ma-0">{{chat.text}}</p>
                     
                 </v-alert>
             </v-list>
@@ -50,11 +50,26 @@
                         clearable
                     >
                         <v-icon slot="prepend" color="secondary">mdi-camera</v-icon>
-                        <v-icon v-if="!newText" slot="append-outer" color="red lighten-1">mdi-microphone</v-icon>
-                        <v-icon @click="sendMessage" v-else slot="append-outer" color="primary lighten-1">mdi-send</v-icon>
+                        <v-icon @click="startRecognition" v-if="!newText && !recording" slot="append-outer" color="red lighten-1">mdi-microphone</v-icon>
+                        <v-icon v-else-if="!recording && newText" @click="sendMessage" 
+                            slot="append-outer" color="primary lighten-1">mdi-send
+                        </v-icon>
+                        <v-icon v-else  slot="append-outer" color="red lighten-1">mdi-microphone-outline</v-icon>
                     </v-textarea>
                 </v-col>
             </v-row>
+            <v-btn
+                v-show="showFab"
+                @click="goBottom"
+                class="fab"
+                color="primary"
+                dark
+                small
+                fab
+
+            >
+                <v-icon>mdi-arrow-down</v-icon>
+            </v-btn>
         </v-col>
     </v-row>
 </template>
@@ -69,20 +84,63 @@ export default {
         return {
             user: this.$store.getters['auth/getUser'],
             loading: false,
+            recording: false,
+            recognition: false,
             chatRoom: {},
-            newText: ''
+            newText: '',
+            offsetTop: window.scrollY,
         }
     },
 
     computed: {
+        showFab(){
+            return this.offsetTop < this.pageHeight 
+        },
         darkMode(){
             return this.$vuetify.theme.dark ? 'black' : 'white'
         }
     },
 
     methods: {
+
+        startRecognition(){
+            this.recognition.start()
+            this.recording = true
+        },
+        initRecognition(){
+            let SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+            this.recognition = SpeechRecognition ? new SpeechRecognition() : false
+
+            if (!this.recognition) {
+                return false
+            }
+
+            console.log(this.recognition)
+            this.recognition.lang = this.lang
+            this.recognition.interimResults = true
+
+            this.recognition.addEventListener('speechend', event => {
+                this.recording = false
+            })
+
+            this.recognition.addEventListener('result', event => {
+                this.newText = event.results[0][0].transcript
+            })
+
+        },
+
+        onScroll (e) {
+            this.offsetTop = window.scrollY
+        },
+
         isSelf(id){
             return id === this.user.id
+        },
+
+        goBottom(){
+            console.log(this.pageHeight, this.offsetTop, this.pageHeight - this.offsetTop)
+            this.$vuetify.goTo(this.pageHeight)
+            this.$vuetify.goTo(this.pageHeight + (this.pageHeight - this.offsetTop))
         },
         getChatRoom(id){
             this.loading = true
@@ -108,7 +166,7 @@ export default {
                 }
             }).then(ChatRoom=>{
                 this.chatRoom = ChatRoom
-                console.log(ChatRoom)
+                this.goBottom()
             }).catch(ChatRoomError=>{
                 console.error({ChatRoomError})
             }).finally(_=>{
@@ -137,9 +195,9 @@ export default {
             console.log({snapShot})
             if(snapShot.mutation === 'CREATED'){
                 this.chatRoom.content.push(snapShot.node)
+                this.goBottom()
             }
         },
-
         sendMessage(){
             MessageContent.insert(`{
                 text
@@ -165,6 +223,7 @@ export default {
         let id = this.$route.params.id
         this.getChatRoom(id)
         this.listenToIncomingMessages(id)
+        this.initRecognition()
     }
 }
 </script>
@@ -185,6 +244,12 @@ export default {
     .messages{
         margin-top: 56px;
         margin-bottom: 56px;
+    }
+
+    .fab{
+        position: fixed;
+        bottom: 80px;
+        right: 32px
     }
 
 </style>

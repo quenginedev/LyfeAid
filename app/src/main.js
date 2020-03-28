@@ -20,6 +20,14 @@ const apolloProvider = createProvider()
 
 Vue.config.productionTip = false
 
+Vue.mixin({
+  computed: {
+    pageHeight () {
+      return document.body.scrollHeight
+    }
+}
+})
+
 export const app = new Vue({
   router,
   store,
