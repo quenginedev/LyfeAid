@@ -1,5 +1,5 @@
 <template>
-    <v-row justify="center">
+    <v-row v-scroll="onScroll" justify="center">
         <v-col cols="10" sm="6" md="4" lg="3" xl="3" class="messages">
             <v-list>
                 <v-alert
@@ -55,6 +55,18 @@
                     </v-textarea>
                 </v-col>
             </v-row>
+            <v-btn
+                v-show="showFab"
+                @click="goBottom"
+                class="fab"
+                color="primary"
+                dark
+                small
+                fab
+
+            >
+                <v-icon>mdi-arrow-down</v-icon>
+            </v-btn>
         </v-col>
     </v-row>
 </template>
@@ -70,19 +82,31 @@ export default {
             user: this.$store.getters['auth/getUser'],
             loading: false,
             chatRoom: {},
-            newText: ''
+            newText: '',
+            offsetTop: window.scrollY,
         }
     },
 
     computed: {
+        showFab(){
+            return this.offsetTop < this.pageHeight 
+        },
         darkMode(){
             return this.$vuetify.theme.dark ? 'black' : 'white'
         }
     },
 
     methods: {
+        onScroll (e) {
+            this.offsetTop = window.scrollY
+        },
+
         isSelf(id){
             return id === this.user.id
+        },
+
+        goBottom(){
+            this.$vuetify.goTo(this.pageHeight)
         },
         getChatRoom(id){
             this.loading = true
@@ -108,7 +132,7 @@ export default {
                 }
             }).then(ChatRoom=>{
                 this.chatRoom = ChatRoom
-                this.$vuetify.goTo(this.pageHeight)
+                this.goBottom()
             }).catch(ChatRoomError=>{
                 console.error({ChatRoomError})
             }).finally(_=>{
@@ -137,7 +161,7 @@ export default {
             console.log({snapShot})
             if(snapShot.mutation === 'CREATED'){
                 this.chatRoom.content.push(snapShot.node)
-                this.$vuetify.goTo(this.pageHeight)
+                this.goBottom()
             }
         },
 
@@ -186,6 +210,12 @@ export default {
     .messages{
         margin-top: 56px;
         margin-bottom: 56px;
+    }
+
+    .fab{
+        position: fixed;
+        bottom: 80px;
+        right: 32px
     }
 
 </style>
