@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-row justify="center" v-if="show_routes">
-      <v-col cols="12" sm="8" md="6" lg="4" xl="3">
+      <v-col cols="12" sm="8" md="6" lg="4" xl="3" style="height: 100vh">
         <v-snackbar
           top
           color="error"

@@ -23,11 +23,11 @@
                     color="primary"
                 ></v-progress-circular>
             </v-row>
-            <doctor-search-card 
+            <UserCommunicationCard 
                 v-for="(doctor, index) in doctors" 
                 :key="index"
-                :doctor="doctor"
-            ></doctor-search-card>
+                :person="doctor"
+            ></UserCommunicationCard>
         </v-col>
     </v-row>
 </template>
@@ -35,16 +35,17 @@
 import Crud from '../../graphql/Crud.gql'
 const User = new Crud('user')
 
-import DoctorSearchCard from '../../components/DoctorSearchCard'
+import UserCommunicationCard from '../../components/UserCommunicationCard'
 
 export default {
     name: "searchDoctor",
-    components: {DoctorSearchCard},
+    components: {UserCommunicationCard},
     data() {
         return {
             loading: false,
             doctors: [],
-            search_phrase: ''
+            search_phrase: '',
+            user: this.$store.getters['auth/getUser']
         }
     },
     methods: {
@@ -64,7 +65,8 @@ export default {
                 where: {
                     account_type: {
                         name: "doctor"
-                    }
+                    },
+                    id_not: this.user.id
                 }
             }).then(res=>{
                 this.doctors = res.data
