@@ -108,7 +108,7 @@ export default {
                 }
             }).then(ChatRoom=>{
                 this.chatRoom = ChatRoom
-                console.log(ChatRoom)
+                this.$vuetify.goTo(this.pageHeight)
             }).catch(ChatRoomError=>{
                 console.error({ChatRoomError})
             }).finally(_=>{
@@ -137,6 +137,7 @@ export default {
             console.log({snapShot})
             if(snapShot.mutation === 'CREATED'){
                 this.chatRoom.content.push(snapShot.node)
+                this.$vuetify.goTo(this.pageHeight)
             }
         },
 
