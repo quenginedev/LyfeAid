@@ -3,15 +3,15 @@
         <v-row align="center">
             <v-col cols="3" class=" text-center">
                 <v-avatar class=" elevation-3" color="primary">
-                    <v-img v-if="doctor.photoURL" :src="doctor.photoURL"></v-img>
-                    <v-icon v-else color="white">mdi-doctor</v-icon>
+                    <v-img v-if="person.photoURL" :src="person.photoURL"></v-img>
+                    <v-icon v-else color="white">mdi-account</v-icon>
                 </v-avatar>
             </v-col>
             <v-col cols="9">
-                <p class="ma-0 pa-0"><v-icon left>mdi-account</v-icon>Dr. {{doctor.name}}</p>
+                <p class="ma-0 pa-0"><v-icon left>mdi-account</v-icon>Dr. {{person.name}}</p>
                 <p class="ma-0 pa-0 text-capitalize">
                     <v-icon left>mdi-stethoscope</v-icon>
-                    {{doctor.specialization || 'general doctor'}}
+                    {{person.specialization || 'general person'}}
                 </p>
             </v-col>
         </v-row>
@@ -22,7 +22,7 @@
                     icon
                     color="secondary" 
                     :loading="chatLoading"
-                    @click="messageUser(doctor)">
+                    @click="messageUser(person)">
                         <v-icon>mdi-chat</v-icon>
                     </v-btn>
             </v-col>
@@ -52,23 +52,24 @@
                     slot="append-outer"
                     v-if="!creationMessageSending" 
                     :color="creationMessage ? 'secondary' : 'grey'"
-                    @click="sendCreationMessage(doctor)"
+                    @click="sendCreationMessage(person)"
                 >mdi-send</v-icon>
                 <v-icon v-else slot="append-outer">mdi-send-clock</v-icon>
             </v-textarea>
         </v-card-actions>
+        <!-- {{person.id}} -->
+        <!-- {{user.id}} -->
     </v-card>
 </template>
 <script>
 import Crud from '../graphql/Crud.gql'
 const ChatRoom = new Crud('chatRoom')
 export default {
-    props: ['doctor'],
+    props: ['person'],
     data() {
         return {
             user: this.$store.getters['auth/getUser'],
             chatLoading: false,
-
             creationMessage: '',
             creationMessageRules: [v => v.length <= 255 || 'Max 255 characters'],
             showCreateChatRoomField: false,
@@ -76,19 +77,21 @@ export default {
         }
     },
     methods: {
-        messageUser(doctor){
+        messageUser(person){
             this.chatLoading = true
-            // console.log(this.user.id, doctor.id)
-            ChatRoom.find(`{id}`, {
+            let options = {
                 where: {
                     recipients_every: {
-                    AND: [
-                        {id: this.user.id},
-                        {id: doctor.id},
-                    ]
+                        OR: [
+                            {id: this.user.id},
+                            {id: person.id},
+                        ]
                     }
                 }
-            }).then(res=>{
+            }
+            // console.log(this.user.id, person.id)
+            ChatRoom.find(`{id}`, options).then(res=>{
+                console.log({res, options})
                 if(res.data.length < 1){
                     this.showCreateChatRoomField = true
                 }else{
@@ -101,7 +104,7 @@ export default {
             })
         },
 
-        sendCreationMessage(doctor){
+        sendCreationMessage(person){
             if(this.creationMessage){
                 this.creationMessageSending = true
                 ChatRoom.insert(`{id}`,{
@@ -109,7 +112,7 @@ export default {
                         recipients: {
                             connect: [
                                 {id: this.user.id},
-                                {id: doctor.id},
+                                {id: person.id},
                             ]
                         },
                         content: {create: {
