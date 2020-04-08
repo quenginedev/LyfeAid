@@ -1,6 +1,6 @@
 <template>
     <v-row justify="center">
-        <v-col cols="10" sm="6" md="4" lg="3" xl="3">
+        <v-col cols="12" sm="6" md="4" lg="3" xl="3">
             <v-row justify="space-between">
                 <v-text-field
                         v-model="search_phrase"
@@ -57,6 +57,10 @@ export default {
                 phone
                 gender
                 verified
+                account_type{
+                    id
+                    name
+                }
                 specialization{
                     id
                     name
@@ -70,6 +74,7 @@ export default {
                 }
             }).then(res=>{
                 this.doctors = res.data
+                console.log({res})
             }).catch(error=>{
                 console.error(error)
             }).finally(_=>{
