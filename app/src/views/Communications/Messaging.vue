@@ -1,7 +1,7 @@
 <template>
     <v-row v-scroll="onScroll" justify="center">
-        <v-col cols="10" sm="6" md="4" lg="3" xl="3" class="messages">
-            <v-list>
+        <v-col cols="12" sm="6" md="4" lg="3" xl="3" class="messages">
+            <v-list ref="messages" >
                 <v-alert
                     class="py-0"
                     v-for="(chat, index) in chatRoom.content" :key="index"
@@ -25,6 +25,9 @@
                 <v-col cols="10">
                     <v-row justify="space-between" align="center">
                         <v-btn @click="$router.go(-1)" icon><v-icon>mdi-arrow-left</v-icon></v-btn>
+                        <p class="ma-0 pa-0 subtitle-1">
+                            {{isDoctor}}
+                            {{recipient.name}}</p>
                         <v-avatar color="primary"><v-icon dark>mdi-doctor</v-icon></v-avatar>
                     </v-row>
                 </v-col>
@@ -36,9 +39,9 @@
                 color="primary"
             ></v-progress-circular>
         </v-row>
-        <v-col cols="12" :class="darkMode" class="input ma-0 pa-0">
+        <v-col cols="12" :class="darkMode" class="input pa-0">
             <v-row justify="center">
-                <v-col cols="11" class=" pb-0 mb-0">
+                <v-col cols="11" class="">
                     <v-textarea
                         v-model="newText"
                         rows="1"
@@ -83,6 +86,7 @@ export default {
     data() {
         return {
             user: this.$store.getters['auth/getUser'],
+            recipient: {},
             loading: false,
             recording: false,
             recognition: false,
@@ -92,12 +96,30 @@ export default {
         }
     },
 
+    watch: {
+        // ['chatRoom.content'](chats){
+        //     console.log(chats)
+        //     if(chats){
+        //         this.goBottom(chats[chats.length - 1])
+        //     }
+        // }
+    },    
+
     computed: {
         showFab(){
+            console.log({offsetTop: this.offsetTop, pageHeight:this.pageHeight })
             return this.offsetTop < this.pageHeight 
         },
         darkMode(){
             return this.$vuetify.theme.dark ? 'black' : 'white'
+        },
+
+        isDoctor(){
+            if(this.recipient.account_type){
+                return this.recipient.account_type.name == 'doctor' ? 'Dr.' : ''
+            }else {
+                return ''
+            }
         }
     },
 
@@ -137,10 +159,11 @@ export default {
             return id === this.user.id
         },
 
-        goBottom(){
-            console.log(this.pageHeight, this.offsetTop, this.pageHeight - this.offsetTop)
-            this.$vuetify.goTo(this.pageHeight)
-            this.$vuetify.goTo(this.pageHeight + (this.pageHeight - this.offsetTop))
+        goBottom(node){
+            setTimeout(_=>{
+                this.$vuetify.goTo(this.$refs.messages.$el.scrollHeight)
+                // console.log({height: this.$refs.messages.$el.scrollHeight})
+            }, 500)
         },
         getChatRoom(id){
             this.loading = true
@@ -148,11 +171,18 @@ export default {
             {
                 id
                 recipients{
+                    id
                     name
+                    account_type{
+                        id
+                        name
+                    }
                 }
                 content {
+                    id
                     text
                     sender{
+                        id
                         name
                         id
                     }
@@ -166,7 +196,13 @@ export default {
                 }
             }).then(ChatRoom=>{
                 this.chatRoom = ChatRoom
+                ChatRoom.recipients.forEach(recipient => {
+                    if(recipient.id !== this.user.id){
+                        this.recipient = recipient
+                    }
+                })
                 this.goBottom()
+                // console.log(this.recipient)
             }).catch(ChatRoomError=>{
                 console.error({ChatRoomError})
             }).finally(_=>{
@@ -176,6 +212,7 @@ export default {
 
         listenToIncomingMessages(id){
             MessageContent.subscribeToMore(`{
+                id
                 text
                 sender{
                     name
