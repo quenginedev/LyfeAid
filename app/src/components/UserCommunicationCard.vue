@@ -1,5 +1,5 @@
 <template>
-    <v-card class="card-rounded px-3 mb-7">
+    <v-card class="px-3 mb-7">
         <v-row align="center">
             <v-col cols="3" class=" text-center">
                 <v-avatar class=" elevation-3" color="primary">
@@ -8,10 +8,13 @@
                 </v-avatar>
             </v-col>
             <v-col cols="9">
-                <p class="ma-0 pa-0"><v-icon left>mdi-account</v-icon>Dr. {{person.name}}</p>
-                <p class="ma-0 pa-0 text-capitalize">
+                <p class="ma-0 pa-0"><v-icon left>mdi-account</v-icon>
+                    <span v-if="person.account_type.name == 'doctor'">Dr. </span> 
+                    {{person.name}}
+                </p>
+                <p v-if="person.specialization" class="ma-0 pa-0 text-capitalize">
                     <v-icon left>mdi-stethoscope</v-icon>
-                    {{person.specialization || 'general person'}}
+                    {{person.specialization.name}}
                 </p>
             </v-col>
         </v-row>
